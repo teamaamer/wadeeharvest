@@ -18,8 +18,8 @@ import { useShopifyCart } from "@/context/ShopifyCartContext";
 const navigation = [
   { name: "Home", link: "/" },
   { name: "Shop", link: "/shop" },
-  { name: "About", link: "/#story" },
-  { name: "Contact", link: "/contact" },
+  { name: "About", link: "/#about" },
+  { name: "Contact", link: "/#contact" },
 ];
 
 export function Header() {

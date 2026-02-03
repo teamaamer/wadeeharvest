@@ -1,30 +1,16 @@
 "use client";
 
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
-
-export default function ContactPage() {
-  const router = useRouter();
-
-  useEffect(() => {
-    router.replace("/#contact");
-  }, [router]);
-
-  return null;
-}
-
-/*
-// Old contact page - now moved to ContactSection component on home page
 import { useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { useToast } from "@/components/ui/Toast";
 
-function OldContactPage() {
+export function ContactSection() {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     phone: "",
     comment: "",
+    signUpForUpdates: false,
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -33,8 +19,12 @@ function OldContactPage() {
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    const { name, value, type } = e.target;
+    const checked = (e.target as HTMLInputElement).checked;
+    setFormData((prev) => ({ 
+      ...prev, 
+      [name]: type === 'checkbox' ? checked : value 
+    }));
     if (errors[name]) {
       setErrors((prev) => ({ ...prev, [name]: "" }));
     }
@@ -67,36 +57,57 @@ function OldContactPage() {
     if (validate()) {
       console.log("Form submitted:", formData);
       setIsSubmitted(true);
-      showToast("Message sent successfully!");
-      setFormData({ name: "", email: "", phone: "", comment: "" });
+      const message = formData.signUpForUpdates 
+        ? "Message sent! You've been added to our updates list."
+        : "Message sent successfully!";
+      showToast(message);
+      setFormData({ name: "", email: "", phone: "", comment: "", signUpForUpdates: false });
       setTimeout(() => setIsSubmitted(false), 3000);
     }
   };
 
   return (
-    <div className="min-h-screen bg-background py-12">
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h1 className="text-4xl font-bold mb-4">Contact Us</h1>
-        <p className="text-muted mb-8">
-          Have questions? We'd love to hear from you. Send us a message and
-          we'll respond as soon as possible.
+    <section id="contact" className="py-16 bg-background scroll-mt-20">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 className="text-4xl font-bold mb-4 text-center">Get In Touch</h2>
+        <p className="text-muted mb-12 text-center">
+          Have questions or want to stay updated? Send us a message and optionally sign up for updates about our Canada-wide delivery launch.
         </p>
 
-        <div className="bg-surface border border-border rounded-lg p-8">
-          {isSubmitted ? (
-            <div className="text-center py-8">
-              <div className="text-primary mb-4">
-                <svg className="w-20 h-20 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-              </div>
-              <h2 className="text-2xl font-bold mb-2">Thank You!</h2>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+          {/* Left side - Contact Info */}
+          <div className="space-y-8">
+            <div className="bg-surface border border-border rounded-lg p-6">
+              <h3 className="text-xl font-semibold mb-3">Visit Us</h3>
               <p className="text-muted">
-                We've received your message and will get back to you soon.
+                Peterborough Regional Farmers Market
+                <br />
+                Saturdays and Wednesdays
               </p>
             </div>
-          ) : (
-            <form onSubmit={handleSubmit} className="space-y-6">
+
+            <div className="bg-surface border border-border rounded-lg p-6">
+              <h3 className="text-xl font-semibold mb-3">Email</h3>
+              <p className="text-muted">info@wadeeharvest.ca</p>
+            </div>
+          </div>
+
+          {/* Right side - Contact Form */}
+          <div className="bg-surface border border-border rounded-lg p-8">
+            {isSubmitted ? (
+              <div className="text-center py-8">
+                <div className="text-primary mb-4">
+                  <svg className="w-20 h-20 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+                <h3 className="text-2xl font-bold mb-2">Thank You!</h3>
+                <p className="text-muted">
+                  We've received your message and will get back to you soon.
+                </p>
+              </div>
+            ) : (
+              <form onSubmit={handleSubmit} className="space-y-6">
               <div>
                 <label
                   htmlFor="name"
@@ -192,29 +203,31 @@ function OldContactPage() {
                 )}
               </div>
 
+              <div className="flex items-start gap-3 p-4 bg-background rounded-md border border-border">
+                <input
+                  type="checkbox"
+                  id="signUpForUpdates"
+                  name="signUpForUpdates"
+                  checked={formData.signUpForUpdates}
+                  onChange={handleChange}
+                  className="mt-1 w-4 h-4 text-primary border-border rounded focus:ring-2 focus:ring-primary"
+                />
+                <label htmlFor="signUpForUpdates" className="text-sm cursor-pointer">
+                  <span className="font-medium">Sign up for updates</span>
+                  <p className="text-muted mt-1">
+                    Be the first to know when we launch Canada-wide delivery and get exclusive offers.
+                  </p>
+                </label>
+              </div>
+
               <Button type="submit" variant="primary" size="lg" className="w-full">
                 Send Message
               </Button>
             </form>
           )}
-        </div>
-
-        <div className="mt-12 grid grid-cols-1 md:grid-cols-2 gap-8">
-          <div className="bg-surface border border-border rounded-lg p-6">
-            <h3 className="font-semibold mb-2">Visit Us</h3>
-            <p className="text-muted">
-              Peterborough Regional Farmers Market
-              <br />
-              Saturdays and Wednesdays
-            </p>
-          </div>
-          <div className="bg-surface border border-border rounded-lg p-6">
-            <h3 className="font-semibold mb-2">Email</h3>
-            <p className="text-muted">info@wadeeharvest.ca</p>
           </div>
         </div>
       </div>
-    </div>
+    </section>
   );
 }
-*/

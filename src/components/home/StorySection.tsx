@@ -2,7 +2,7 @@ import Image from "next/image";
 
 export function StorySection() {
   return (
-    <section id="story" className="relative py-24 lg:py-32 overflow-hidden">
+    <section id="about" className="relative py-24 lg:py-32 overflow-hidden">
       <div className="absolute inset-0">
         <Image
           src="/images/aboutus.png"

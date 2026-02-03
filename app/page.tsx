@@ -9,6 +9,7 @@ import { Testimonials } from "@/components/home/Testimonials";
 import { FindUs } from "@/components/home/FindUs";
 import { ShippingReturns } from "@/components/home/ShippingReturns";
 import { FAQ } from "@/components/home/FAQ";
+import { ContactSection } from "@/components/home/ContactSection";
 import { EmailSignup } from "@/components/ui/EmailSignup";
 
 export default function Home() {
@@ -25,11 +26,7 @@ export default function Home() {
       <FindUs />
       <ShippingReturns />
       <FAQ />
-      <section className="py-16 bg-background">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-          <EmailSignup />
-        </div>
-      </section>
+      <ContactSection />
     </>
   );
 }
