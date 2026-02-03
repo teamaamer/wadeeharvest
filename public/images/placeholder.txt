@@ -1,0 +1,24 @@
+PLACEHOLDER IMAGES NEEDED
+
+Please add the following images to this directory (/public/images/):
+
+1. hero-olive-oil.jpg - Hero image showing premium Palestinian olive oil and olives
+2. olive-oil-375ml.jpg - Product photo of 375ml olive oil bottle
+3. olive-oil-500ml.jpg - Product photo of 500ml olive oil bottle
+4. olive-oil-750ml.jpg - Product photo of 750ml olive oil bottle
+5. dates-500g.jpg - Product photo of 500g Medjool dates package
+6. dates-1kg.jpg - Product photo of 1kg Medjool dates package
+7. gift-set.jpg - Product photo of olive oil and dates gift set
+8. farm-landscape.jpg - Landscape photo of Palestinian farm in Wadi Fuqin
+9. olive-grove.jpg - Photo of olive groves
+10. harvest-process.jpg - Photo showing harvest/production process
+
+Image specifications:
+- Format: JPG or PNG
+- Minimum resolution: 1200x1200px for product images, 1920x1080px for landscape images
+- Optimized for web (compressed but high quality)
+- Authentic, professional food photography style
+
+For development/testing, you can use placeholder images from:
+- https://placehold.co/1200x1200/FBF6EE/254D3B?text=Product+Image
+- Or any stock photo service with appropriate licensing
