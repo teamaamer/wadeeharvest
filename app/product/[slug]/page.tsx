@@ -20,6 +20,7 @@ export default function ProductPage() {
   const [relatedProducts, setRelatedProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const { addItem } = useShopifyCart();
   const { showToast } = useToast();
 
@@ -92,14 +93,63 @@ export default function ProductPage() {
         />
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mt-8">
-          <div className="relative aspect-square bg-surface rounded-lg overflow-hidden border border-border">
-            <Image
-              src={product.images[0].src}
-              alt={product.images[0].alt}
-              fill
-              className="object-cover"
-              priority
-            />
+          <div className="space-y-4">
+            {/* Main Image */}
+            <div className="relative aspect-square bg-surface rounded-lg overflow-hidden border border-border">
+              <Image
+                src={product.images[selectedImageIndex].src}
+                alt={product.images[selectedImageIndex].alt}
+                fill
+                className="object-cover"
+                priority
+              />
+              
+              {/* Navigation Arrows - only show if multiple images */}
+              {product.images.length > 1 && (
+                <>
+                  <button
+                    onClick={() => setSelectedImageIndex((selectedImageIndex - 1 + product.images.length) % product.images.length)}
+                    className="absolute left-4 top-1/2 -translate-y-1/2 bg-surface/90 hover:bg-surface text-foreground p-2 rounded-full shadow-lg transition-all duration-200 hover:scale-110"
+                    aria-label="Previous image"
+                  >
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                    </svg>
+                  </button>
+                  <button
+                    onClick={() => setSelectedImageIndex((selectedImageIndex + 1) % product.images.length)}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 bg-surface/90 hover:bg-surface text-foreground p-2 rounded-full shadow-lg transition-all duration-200 hover:scale-110"
+                    aria-label="Next image"
+                  >
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </button>
+                </>
+              )}
+            </div>
+
+            {/* Thumbnail Gallery - only show if multiple images */}
+            {product.images.length > 1 && (
+              <div className="grid grid-cols-4 gap-3">
+                {product.images.map((image: any, index: number) => (
+                  <button
+                    key={index}
+                    onClick={() => setSelectedImageIndex(index)}
+                    className={`relative aspect-square bg-surface rounded-lg overflow-hidden border-2 transition-all duration-200 hover:border-primary ${
+                      selectedImageIndex === index ? 'border-primary ring-2 ring-primary/20' : 'border-border'
+                    }`}
+                  >
+                    <Image
+                      src={image.src}
+                      alt={image.alt}
+                      fill
+                      className="object-cover"
+                    />
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
 
           <div>
