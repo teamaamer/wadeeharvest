@@ -16,7 +16,7 @@ export default function AccountPage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-background py-12">
+    <div className="min-h-screen bg-background pt-24 py-12">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <h1 className="text-4xl font-bold mb-4">Sign In</h1>
         <p className="text-muted mb-8">

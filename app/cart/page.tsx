@@ -18,7 +18,7 @@ export default function CartPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background py-12 flex items-center justify-center">
+      <div className="min-h-screen bg-background pt-24 py-12 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
           <p className="text-muted">Loading cart...</p>
@@ -29,7 +29,7 @@ export default function CartPage() {
 
   if (!cart || cart.lines.edges.length === 0) {
     return (
-      <div className="min-h-screen bg-background py-12">
+      <div className="min-h-screen bg-background pt-24 py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h1 className="text-4xl font-bold mb-4">Your Cart is Empty</h1>
           <p className="text-muted mb-8">
@@ -46,7 +46,7 @@ export default function CartPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background py-12">
+    <div className="min-h-screen bg-background pt-24 py-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <h1 className="text-4xl font-bold mb-8">Shopping Cart</h1>
 
