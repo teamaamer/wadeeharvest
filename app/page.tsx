@@ -14,7 +14,7 @@ import { EmailSignup } from "@/components/ui/EmailSignup";
 
 export default function Home() {
   return (
-    <>
+    <div className="pt-24">
       <Hero />
       <CategoryGrid />
       <WhyWadee />
@@ -27,6 +27,6 @@ export default function Home() {
       <ShippingReturns />
       <FAQ />
       <ContactSection />
-    </>
+    </div>
   );
 }

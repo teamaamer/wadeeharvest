@@ -90,16 +90,18 @@ interface NavItemsProps {
   items: { name: string; link: string }[];
   className?: string;
   onItemClick?: () => void;
+  isLight?: boolean;
 }
 
-export const NavItems = ({ items, className, onItemClick }: NavItemsProps) => {
+export const NavItems = ({ items, className, onItemClick, isLight = false }: NavItemsProps) => {
   const [hovered, setHovered] = useState<number | null>(null);
 
   return (
     <motion.div
       onMouseLeave={() => setHovered(null)}
       className={cn(
-        "absolute inset-0 hidden flex-1 flex-row items-center justify-center space-x-2 text-sm font-medium text-foreground transition duration-200 hover:text-foreground/80 lg:flex lg:space-x-2",
+        "absolute inset-0 hidden flex-1 flex-row items-center justify-center space-x-2 text-sm font-medium transition duration-200 lg:flex lg:space-x-2",
+        isLight ? "text-surface hover:text-surface/80" : "text-foreground hover:text-foreground/80",
         className,
       )}
     >
@@ -109,7 +111,7 @@ export const NavItems = ({ items, className, onItemClick }: NavItemsProps) => {
           href={item.link}
           onMouseEnter={() => setHovered(idx)}
           onClick={onItemClick}
-          className="relative px-4 py-2 text-foreground"
+          className={cn("relative px-4 py-2", isLight ? "text-surface" : "text-foreground")}
         >
           {hovered === idx && (
             <motion.div
@@ -280,27 +282,18 @@ export const MobileNavMenu = ({
   return (
     <AnimatePresence>
       {isOpen && (
-        <>
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={onClose}
-            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100001]"
-          />
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.2 }}
-            className={cn(
-              "absolute inset-x-0 top-14 z-[100002] flex w-full flex-col items-start justify-start gap-4 rounded-lg bg-surface border border-border px-4 py-8 shadow-2xl shadow-black/20",
-              className,
-            )}
-          >
-            {children}
-          </motion.div>
-        </>
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -20 }}
+          transition={{ duration: 0.2 }}
+          className={cn(
+            "absolute inset-x-0 top-14 z-[100002] flex w-full flex-col items-start justify-start gap-4 rounded-lg bg-surface border border-border px-4 py-8 shadow-2xl shadow-black/20",
+            className,
+          )}
+        >
+          {children}
+        </motion.div>
       )}
     </AnimatePresence>
   );

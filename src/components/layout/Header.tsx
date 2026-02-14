@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { usePathname } from "next/navigation";
 import Link from "next/link";
 import {
   Navbar,
@@ -18,23 +19,47 @@ import { useShopifyCart } from "@/context/ShopifyCartContext";
 const navigation = [
   { name: "Home", link: "/" },
   { name: "Shop", link: "/shop" },
-  { name: "About", link: "/#about" },
+  { name: "About", link: "/about" },
   { name: "Contact", link: "/#contact" },
 ];
 
 export function Header() {
   const [isOpen, setIsOpen] = useState(false);
   const { totalItems } = useShopifyCart();
+  const pathname = usePathname();
+  const isAboutPage = pathname === "/about";
+  const [scrolledPastVideo, setScrolledPastVideo] = useState(false);
+
+  useEffect(() => {
+    if (!isAboutPage) {
+      setScrolledPastVideo(false);
+      return;
+    }
+
+    const handleScroll = () => {
+      // Detect if scrolled past the hero video (viewport height)
+      const scrollPosition = window.scrollY;
+      const viewportHeight = window.innerHeight;
+      setScrolledPastVideo(scrollPosition > viewportHeight * 0.8);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    handleScroll(); // Check initial position
+
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [isAboutPage]);
+
+  const isLightText = isAboutPage && !scrolledPastVideo;
 
   return (
     <Navbar>
       <NavBody>
         <NavbarLogo />
-        <NavItems items={navigation} />
+        <NavItems items={navigation} isLight={isLightText} />
         <div className="flex items-center gap-3">
           <Link
             href="/account"
-            className="relative z-10 text-foreground hover:text-primary transition-colors focus:outline-none focus:ring-2 focus:ring-primary rounded p-2"
+            className={`relative z-10 ${isLightText ? 'text-surface hover:text-surface/80' : 'text-foreground hover:text-primary'} transition-colors focus:outline-none focus:ring-2 focus:ring-primary rounded p-2`}
             aria-label="My Account"
           >
             <svg
@@ -53,7 +78,7 @@ export function Header() {
           </Link>
           <Link
             href="/cart"
-            className="relative text-foreground hover:text-primary transition-colors focus:outline-none focus:ring-2 focus:ring-primary rounded p-2"
+            className={`relative ${isLightText ? 'text-surface hover:text-surface/80' : 'text-foreground hover:text-primary'} transition-colors focus:outline-none focus:ring-2 focus:ring-primary rounded p-2`}
             aria-label={`Cart with ${totalItems} items`}
           >
             <svg

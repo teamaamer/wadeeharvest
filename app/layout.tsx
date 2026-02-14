@@ -32,7 +32,7 @@ export default function RootLayout({
         <ShopifyCartProvider>
           <ToastProvider>
             <Header />
-            <main className="pt-24">{children}</main>
+            <main>{children}</main>
             <Footer />
           </ToastProvider>
         </ShopifyCartProvider>

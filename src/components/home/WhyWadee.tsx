@@ -2,7 +2,7 @@ export function WhyWadee() {
   const features = [
     {
       title: "Single-Origin",
-      description: "All products sourced from our family farm in Wadi Fuqin",
+      description: "All products cultivated on our family farm in Wadi Fuqin",
       icon: (
         <svg className="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
