@@ -229,18 +229,51 @@ export function formatShopifyPrice(amount: string, currencyCode: string = 'CAD')
   }).format(parseFloat(amount));
 }
 
+// Turns a label like "Olive Oil" into a URL-friendly value like "olive-oil".
+export function slugify(value: string): string {
+  return value
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
+
+const SIZE_PATTERN = /(\d+(?:\.\d+)?)\s?(ml|l|g|kg)\b/i;
+
+// Normalizes "375 ML" / "375ml" to "375ml" so filters match.
+function normalizeSize(value: string): string {
+  const match = value.match(SIZE_PATTERN);
+  return match ? `${match[1]}${match[2].toLowerCase()}` : value.trim();
+}
+
+// Sizes come from variant names (e.g. "300g", "500g"). Products without
+// variants show Shopify's placeholder "Default Title", so for those the size
+// is read from the product title instead (e.g. "EVOO – 750ml").
+function getProductSizes(shopifyProduct: ShopifyProduct): string[] {
+  const variantSizes = shopifyProduct.variants.edges
+    .map((edge) => edge.node.title)
+    .filter((title) => title && title !== 'Default Title')
+    .map(normalizeSize);
+  if (variantSizes.length > 0) return Array.from(new Set(variantSizes));
+  const fromTitle = shopifyProduct.title.match(SIZE_PATTERN);
+  return fromTitle ? [normalizeSize(fromTitle[0])] : [];
+}
+
 // Helper to convert Shopify product to our Product type
 export function convertShopifyProduct(shopifyProduct: ShopifyProduct): any {
   const variant = shopifyProduct.variants.edges[0]?.node;
-  const image = shopifyProduct.images.edges[0]?.node;
+  const categoryLabel = shopifyProduct.productType?.trim() || 'Other';
+  const sizes = getProductSizes(shopifyProduct);
 
   return {
     id: shopifyProduct.id,
     name: shopifyProduct.title,
     slug: shopifyProduct.handle,
-    category: shopifyProduct.productType.toLowerCase() || 'olive-oil',
+    category: slugify(categoryLabel),
+    categoryLabel,
     priceCAD: parseFloat(shopifyProduct.priceRange.minVariantPrice.amount),
-    size: variant?.title || '',
+    size: sizes.join(' / '),
+    sizes,
     descriptionShort: shopifyProduct.description.substring(0, 150) + '...',
     descriptionLong: shopifyProduct.description,
     images: shopifyProduct.images.edges.map((edge) => ({
@@ -250,4 +283,10 @@ export function convertShopifyProduct(shopifyProduct: ShopifyProduct): any {
     variantId: variant?.id,
     availableForSale: variant?.availableForSale,
   };
+}
+
+// "Olive Oil • 375ml", or just "Olive Oil" when the product has no size.
+export function productMetaLabel(product: { categoryLabel?: string; category: string; size?: string }): string {
+  const category = product.categoryLabel || product.category.replace(/-/g, ' ');
+  return product.size ? `${category} • ${product.size}` : category;
 }

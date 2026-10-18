@@ -20,12 +20,12 @@ export function FAQ() {
     {
       question: "Where exactly are these products sourced from?",
       answer:
-        "All our products come directly from our family farm in Wadi Fuqin, Palestine. This fertile village has been cultivating olives and dates for thousands of years, and we're proud to share these authentic flavours with Canada.",
+        "All our products come directly from family farms in Palestine, where olives and dates have been cultivated for thousands of years. We're proud to share these authentic flavours with you.",
     },
     {
-      question: "Do you ship across Canada?",
+      question: "Where do you ship?",
       answer:
-        "We are preparing to launch Canada-wide shipping very soon! Currently, you can find us at the Peterborough Regional Farmers Market (Saturdays and Wednesdays) and select local partners like Kit Coffee. Sign up for our email list to be notified when online ordering launches.",
+        "We ship anywhere in North America. Order online and we'll send it to your door. You can also find us in person at the Peterborough Regional Farmers Market (Saturdays and Wednesdays) and at select local partners like Kit Coffee.",
     },
   ];
 

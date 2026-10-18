@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { getProductByHandle, getAllProducts, convertShopifyProduct, formatShopifyPrice } from "@/lib/shopify-helpers";
+import { getProductByHandle, getAllProducts, convertShopifyProduct, formatShopifyPrice, productMetaLabel } from "@/lib/shopify-helpers";
 import { Button } from "@/components/ui/Button";
 import { QuantitySelector } from "@/components/ui/QuantitySelector";
 import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
@@ -154,7 +154,7 @@ export default function ProductPage() {
 
           <div>
             <div className="text-sm text-muted uppercase tracking-wide mb-2">
-              {product.category.replace("-", " ")} • {product.size}
+              {productMetaLabel(product)}
             </div>
             <h1 className="text-4xl font-bold mb-4">{product.name}</h1>
             <p className="text-3xl font-semibold text-primary mb-6">

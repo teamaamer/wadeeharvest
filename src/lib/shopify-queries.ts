@@ -47,7 +47,7 @@ export const GET_ALL_PRODUCTS = gql`
               }
             }
           }
-          variants(first: 1) {
+          variants(first: 20) {
             edges {
               node {
                 id
@@ -57,6 +57,10 @@ export const GET_ALL_PRODUCTS = gql`
                   currencyCode
                 }
                 availableForSale
+                selectedOptions {
+                  name
+                  value
+                }
               }
             }
           }

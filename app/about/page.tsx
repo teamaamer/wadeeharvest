@@ -4,6 +4,7 @@ import { Resilience } from "@/components/about/Resilience";
 import { EthicalSourcing } from "@/components/about/EthicalSourcing";
 import { ImageGallery } from "@/components/about/ImageGallery";
 import { CallToAction } from "@/components/about/CallToAction";
+import { CsaBox } from "@/components/about/CsaBox";
 
 export const metadata = {
   title: "About Wadi Fuqin | Wadee Harvest",
@@ -17,6 +18,7 @@ export default function AboutPage() {
       <VillageStory />
       <Resilience />
       <EthicalSourcing />
+      <CsaBox />
       <ImageGallery />
       <CallToAction />
     </>

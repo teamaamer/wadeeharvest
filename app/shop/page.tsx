@@ -1,9 +1,21 @@
 "use client";
 
 import { useState, useMemo, useEffect } from "react";
-import { getAllProducts, ShopifyProduct, convertShopifyProduct } from "@/lib/shopify-helpers";
+import { getAllProducts, convertShopifyProduct } from "@/lib/shopify-helpers";
 import { ProductCard } from "@/components/ui/ProductCard";
-import { FilterBar } from "@/components/ui/FilterBar";
+import { FilterBar, FilterOption } from "@/components/ui/FilterBar";
+
+// Sorts sizes by amount, with millilitres/litres before grams/kilograms.
+function sizeSortKey(size: string): [number, number] {
+  const match = size.match(/^(\d+(?:\.\d+)?)(ml|l|g|kg)$/);
+  if (!match) return [2, 0];
+  const amount = parseFloat(match[1]);
+  const unit = match[2];
+  if (unit === "ml") return [0, amount];
+  if (unit === "l") return [0, amount * 1000];
+  if (unit === "g") return [1, amount];
+  return [1, amount * 1000];
+}
 
 export default function ShopPage() {
   const [products, setProducts] = useState<any[]>([]);
@@ -18,22 +30,55 @@ export default function ShopPage() {
       const shopifyProducts = await getAllProducts();
       const converted = shopifyProducts.map(convertShopifyProduct);
       setProducts(converted);
+
+      // Homepage category tiles link here as /shop?category=olive-oil
+      const requested = new URLSearchParams(window.location.search).get("category");
+      if (requested && converted.some((p: { category: string }) => p.category === requested)) {
+        setSelectedCategory(requested);
+      }
       setLoading(false);
     };
     fetchProducts();
   }, []);
 
+  // Category options come from each product's Product type in Shopify.
+  const categories = useMemo<FilterOption[]>(() => {
+    const seen = new Map<string, string>();
+    for (const p of products) {
+      if (!seen.has(p.category)) seen.set(p.category, p.categoryLabel);
+    }
+    return Array.from(seen, ([value, label]) => ({ value, label })).sort((a, b) =>
+      a.label.localeCompare(b.label)
+    );
+  }, [products]);
+
+  // Size options only list sizes that exist in the chosen category.
+  const sizes = useMemo<string[]>(() => {
+    const inCategory =
+      selectedCategory === "all" ? products : products.filter((p) => p.category === selectedCategory);
+    const all = new Set<string>();
+    inCategory.forEach((p) => p.sizes.forEach((s: string) => all.add(s)));
+    return Array.from(all).sort((a, b) => {
+      const [ga, va] = sizeSortKey(a);
+      const [gb, vb] = sizeSortKey(b);
+      return ga - gb || va - vb;
+    });
+  }, [products, selectedCategory]);
+
+  const handleCategoryChange = (category: string) => {
+    setSelectedCategory(category);
+    setSelectedSize("all");
+  };
+
   const filteredProducts = useMemo(() => {
     let filtered = [...products];
 
     if (selectedCategory !== "all") {
-      filtered = filtered.filter((p) => 
-        p.category.toLowerCase() === selectedCategory.toLowerCase()
-      );
+      filtered = filtered.filter((p) => p.category === selectedCategory);
     }
 
     if (selectedSize !== "all") {
-      filtered = filtered.filter((p) => p.size === selectedSize);
+      filtered = filtered.filter((p) => p.sizes.includes(selectedSize));
     }
 
     if (sortBy === "price-low") {
@@ -62,15 +107,17 @@ export default function ShopPage() {
         <div className="mb-8">
           <h1 className="text-4xl font-bold mb-4">Shop All Products</h1>
           <p className="text-muted">
-            Authentic Palestinian olive oil and dates from our family farm in Wadi Fuqin.
+            Authentic premium products from family farms in Palestine.
           </p>
         </div>
 
         <FilterBar
+          categories={categories}
+          sizes={sizes}
           selectedCategory={selectedCategory}
           selectedSize={selectedSize}
           sortBy={sortBy}
-          onCategoryChange={setSelectedCategory}
+          onCategoryChange={handleCategoryChange}
           onSizeChange={setSelectedSize}
           onSortChange={setSortBy}
         />

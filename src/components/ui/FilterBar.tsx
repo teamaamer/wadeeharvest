@@ -1,9 +1,15 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { getCollections, ShopifyCollection } from "@/lib/shopify-helpers";
+import React from "react";
+
+export interface FilterOption {
+  value: string;
+  label: string;
+}
 
 interface FilterBarProps {
+  categories: FilterOption[];
+  sizes: string[];
   selectedCategory: string;
   selectedSize: string;
   sortBy: string;
@@ -12,7 +18,12 @@ interface FilterBarProps {
   onSortChange: (sort: string) => void;
 }
 
+const selectClass =
+  "w-full px-4 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary bg-background";
+
 export function FilterBar({
+  categories,
+  sizes,
   selectedCategory,
   selectedSize,
   sortBy,
@@ -20,17 +31,6 @@ export function FilterBar({
   onSizeChange,
   onSortChange,
 }: FilterBarProps) {
-  const [collections, setCollections] = useState<ShopifyCollection[]>([]);
-  const sizes = ["all", "375ml", "500ml", "750ml", "500g", "1kg"];
-
-  useEffect(() => {
-    const fetchCollections = async () => {
-      const shopifyCollections = await getCollections();
-      setCollections(shopifyCollections);
-    };
-    fetchCollections();
-  }, []);
-
   return (
     <div className="bg-surface border border-border rounded-lg p-4 mb-8">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -42,12 +42,12 @@ export function FilterBar({
             id="category"
             value={selectedCategory}
             onChange={(e) => onCategoryChange(e.target.value)}
-            className="w-full px-4 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary bg-background"
+            className={selectClass}
           >
             <option value="all">All Products</option>
-            {collections.map((collection) => (
-              <option key={collection.id} value={collection.handle}>
-                {collection.title}
+            {categories.map((category) => (
+              <option key={category.value} value={category.value}>
+                {category.label}
               </option>
             ))}
           </select>
@@ -61,7 +61,8 @@ export function FilterBar({
             id="size"
             value={selectedSize}
             onChange={(e) => onSizeChange(e.target.value)}
-            className="w-full px-4 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary bg-background"
+            className={selectClass}
+            disabled={sizes.length === 0}
           >
             <option value="all">All Sizes</option>
             {sizes.map((size) => (
@@ -80,7 +81,7 @@ export function FilterBar({
             id="sort"
             value={sortBy}
             onChange={(e) => onSortChange(e.target.value)}
-            className="w-full px-4 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary bg-background"
+            className={selectClass}
           >
             <option value="featured">Featured</option>
             <option value="price-low">Price: Low to High</option>

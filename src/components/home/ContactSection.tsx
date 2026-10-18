@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { useToast } from "@/components/ui/Toast";
+import { CONTACT_EMAIL } from "@/lib/site";
+import { submitForm } from "@/lib/forms";
 
 export function ContactSection() {
   const [formData, setFormData] = useState({
@@ -14,6 +16,8 @@ export function ContactSection() {
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isSending, setIsSending] = useState(false);
+  const [sendError, setSendError] = useState("");
   const { showToast } = useToast();
 
   const handleChange = (
@@ -51,19 +55,39 @@ export function ContactSection() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!validate() || isSending) return;
 
-    if (validate()) {
-      console.log("Form submitted:", formData);
-      setIsSubmitted(true);
-      const message = formData.signUpForUpdates 
-        ? "Message sent! You've been added to our updates list."
-        : "Message sent successfully!";
-      showToast(message);
-      setFormData({ name: "", email: "", phone: "", comment: "", signUpForUpdates: false });
-      setTimeout(() => setIsSubmitted(false), 3000);
+    setIsSending(true);
+    setSendError("");
+    const result = await submitForm(
+      formData.signUpForUpdates
+        ? "Website message (+ updates sign-up)"
+        : "Website message",
+      {
+        Name: formData.name,
+        Email: formData.email,
+        Phone: formData.phone,
+        Message: formData.comment,
+        "Sign up for updates": formData.signUpForUpdates,
+      }
+    );
+    setIsSending(false);
+
+    if (!result.ok) {
+      setSendError(result.error);
+      return;
     }
+
+    setIsSubmitted(true);
+    showToast(
+      formData.signUpForUpdates
+        ? "Message sent! You've been added to our updates list."
+        : "Message sent successfully!"
+    );
+    setFormData({ name: "", email: "", phone: "", comment: "", signUpForUpdates: false });
+    setTimeout(() => setIsSubmitted(false), 5000);
   };
 
   return (
@@ -72,7 +96,7 @@ export function ContactSection() {
         <div className="text-center mb-12">
           <h2 className="text-4xl lg:text-5xl font-bold mb-4">Get In Touch</h2>
           <p className="text-lg text-muted max-w-2xl mx-auto">
-            Have questions or want to stay updated? Send us a message and optionally sign up for updates about our Canada-wide delivery launch.
+            Have questions or want to stay updated? Send us a message and optionally sign up for news about new harvests and offers.
           </p>
         </div>
 
@@ -107,8 +131,8 @@ export function ContactSection() {
                 </div>
                 <div>
                   <h3 className="text-lg font-semibold mb-2">Email</h3>
-                  <a href="mailto:info@wadeeharvest.ca" className="text-primary hover:text-primary/80 text-sm transition-colors">
-                    info@wadeeharvest.ca
+                  <a href={`mailto:${CONTACT_EMAIL}`} className="text-primary hover:text-primary/80 text-sm transition-colors break-all">
+                    {CONTACT_EMAIL}
                   </a>
                 </div>
               </div>
@@ -240,13 +264,19 @@ export function ContactSection() {
                 <label htmlFor="signUpForUpdates" className="text-sm cursor-pointer flex-1">
                   <span className="font-semibold text-foreground">Sign up for updates</span>
                   <p className="text-muted mt-1 text-xs leading-relaxed">
-                    Be the first to know when we launch Canada-wide delivery and get exclusive offers.
+                    Be the first to hear about new harvests and get exclusive offers.
                   </p>
                 </label>
               </div>
 
-              <Button type="submit" variant="primary" size="lg" className="w-full">
-                Send Message
+              {sendError && (
+                <p role="alert" className="text-secondary text-sm">
+                  {sendError}
+                </p>
+              )}
+
+              <Button type="submit" variant="primary" size="lg" className="w-full" disabled={isSending}>
+                {isSending ? "Sending..." : "Send Message"}
               </Button>
             </form>
           )}

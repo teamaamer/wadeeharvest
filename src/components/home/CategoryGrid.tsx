@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { getCollections, ShopifyCollection } from "@/lib/shopify-helpers";
+import { getCollections, ShopifyCollection, slugify } from "@/lib/shopify-helpers";
 
 export function CategoryGrid() {
   const [collections, setCollections] = useState<ShopifyCollection[]>([]);
@@ -42,7 +42,7 @@ export function CategoryGrid() {
           {collections.slice(0, 2).map((collection) => (
             <Link
               key={collection.id}
-              href={`/shop?category=${collection.handle}`}
+              href={`/shop?category=${slugify(collection.title)}`}
               className="group relative aspect-[4/3] rounded-lg overflow-hidden bg-surface border border-border hover:shadow-xl transition-shadow"
             >
               {collection.image ? (

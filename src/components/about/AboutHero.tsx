@@ -37,21 +37,56 @@ export function AboutHero() {
     };
   }, []);
 
+  // Sound plays only while the hero is at least half on screen.
+  // wantsSoundRef remembers the visitor's choice so scrolling back up
+  // restores sound if it was on.
+  const wantsSoundRef = useRef(true);
+
+  const applyMute = (muted: boolean) => {
+    if (videoRef.current) videoRef.current.muted = muted;
+    setIsMuted(muted);
+  };
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    // Browsers often block autoplay with sound; fall back to muted.
+    video.muted = false;
+    video.play().catch(() => {
+      wantsSoundRef.current = false;
+      applyMute(true);
+      video.play().catch(() => {});
+    });
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) {
+          applyMute(true);
+        } else if (wantsSoundRef.current) {
+          applyMute(false);
+        }
+      },
+      { threshold: 0.5 }
+    );
+    observer.observe(video);
+    return () => observer.disconnect();
+  }, []);
+
   const toggleMute = () => {
-    if (videoRef.current) {
-      videoRef.current.muted = !isMuted;
-      setIsMuted(!isMuted);
-    }
+    const nextMuted = !isMuted;
+    wantsSoundRef.current = !nextMuted;
+    applyMute(nextMuted);
+    if (!nextMuted) videoRef.current?.play().catch(() => {});
   };
 
   return (
     <section className="relative h-screen min-h-[600px] flex items-center justify-center overflow-hidden">
       <video
         ref={videoRef}
-        autoPlay
         loop
-        muted={false}
         playsInline
+        preload="auto"
         className="absolute top-0 left-0 w-full h-full object-cover z-0"
         style={{ minWidth: '100%', minHeight: '100%' }}
       >

@@ -6,12 +6,12 @@ import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 
 export const metadata: Metadata = {
-  title: "Wadee Harvest - Authentic Palestinian Olive Oil & Dates | Peterborough, ON",
-  description: "Based in Peterborough, Ontario we import the rich flavours of Palestinian cuisine from home. Premium extra virgin olive oil and Medjool dates from our family farm in Wadi Fuqin.",
+  title: "Wadee Harvest - Premium Products from Family Farms in Palestine | Peterborough, ON",
+  description: "Based in Peterborough, Ontario we import the rich flavours of Palestinian cuisine from home. Premium products from family farms in Palestine, shipped anywhere in North America.",
   keywords: "Palestinian olive oil, Medjool dates, Peterborough, Ontario, extra virgin olive oil, authentic Palestinian food",
   openGraph: {
     title: "Wadee Harvest - Flavours of Palestine",
-    description: "Premium Palestinian olive oil and dates imported directly from our family farm in Wadi Fuqin.",
+    description: "Premium products imported directly from family farms in Palestine.",
     type: "website",
   },
 };

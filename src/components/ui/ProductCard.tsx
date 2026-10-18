@@ -3,7 +3,7 @@
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { formatShopifyPrice } from "@/lib/shopify-helpers";
+import { formatShopifyPrice, productMetaLabel } from "@/lib/shopify-helpers";
 import { Button } from "./Button";
 import { useShopifyCart } from "@/context/ShopifyCartContext";
 import { useToast } from "./Toast";
@@ -37,7 +37,7 @@ export function ProductCard({ product }: ProductCardProps) {
         </div>
         <div className="p-4">
           <div className="text-xs text-muted uppercase tracking-wide mb-1">
-            {product.category.replace("-", " ")} • {product.size}
+            {productMetaLabel(product)}
           </div>
           <h3 className="font-medium text-foreground mb-2 group-hover:text-primary transition-colors">
             {product.name}

@@ -22,8 +22,8 @@ export function Hero() {
             Flavours of Palestine
           </h1>
           <p className="text-xl lg:text-2xl text-surface/90 mb-8 leading-relaxed drop-shadow-md">
-            Based in Peterborough, Ontario we bring the rich flavours of
-            Palestinian cuisine from our family farm to your table.
+            Based in Peterborough, Ontario, we bring premium products from
+            family farms in Palestine to your table.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/shop">

@@ -1,3 +1,5 @@
+import { CONTACT_EMAIL } from "@/lib/site";
+
 export default function PrivacyPage() {
   return (
     <div className="min-h-screen bg-background pt-24 py-12">
@@ -134,7 +136,7 @@ export default function PrivacyPage() {
             <p className="mt-4">
               <strong>Wadee Harvest</strong>
               <br />
-              Email: info@wadeeharvest.ca
+              Email: {CONTACT_EMAIL}
               <br />
               Peterborough, Ontario, Canada
             </p>
