@@ -1,7 +1,7 @@
 import { CsaSignupForm } from "@/components/csa/CsaSignupForm";
 
 export const metadata = {
-  title: "CSA Box Sign-Up | Wadee Harvest",
+  title: "Community Box Sign-Up | Wadee Harvest",
   description:
     "Subscribe to the Wadee Harvest Community Supported Agriculture (CSA) box: premium products from family farms in Palestine, delivered on a regular schedule.",
 };
@@ -14,7 +14,7 @@ export default function CsaPage() {
           <p className="text-sm font-semibold uppercase tracking-wide text-secondary mb-2">
             Community Supported Agriculture
           </p>
-          <h1 className="text-4xl lg:text-5xl font-bold mb-4">Sign Up for the CSA Box</h1>
+          <h1 className="text-4xl lg:text-5xl font-bold mb-4">Sign Up for the Wadee Harvest Community Box</h1>
           <p className="text-lg text-muted leading-relaxed">
             Receive premium products from family farms in Palestine on a regular schedule.
             Fill in the form and we&apos;ll email you to confirm your subscription.
