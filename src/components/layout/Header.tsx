@@ -20,6 +20,7 @@ const navigation = [
   { name: "Home", link: "/" },
   { name: "Shop", link: "/shop" },
   { name: "About", link: "/about" },
+  { name: "Wadee Community Box", link: "/csa" },
   { name: "Contact", link: "/#contact" },
 ];
 
