@@ -118,7 +118,7 @@ export function AboutHero() {
         }`}
       >
         <h1 className="text-5xl lg:text-7xl font-bold text-surface mb-6 leading-tight drop-shadow-2xl">
-          About Wadi Fuqin
+          About Wadee Harvest
         </h1>
         <p className="text-xl lg:text-2xl text-surface/95 leading-relaxed drop-shadow-lg max-w-3xl mx-auto">
           A small Palestinian village where olive trees aren't just a crop—they're a living record of family, season, and home.
