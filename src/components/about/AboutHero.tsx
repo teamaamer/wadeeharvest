@@ -121,7 +121,7 @@ export function AboutHero() {
           About Wadee Harvest
         </h1>
         <p className="text-xl lg:text-2xl text-surface/95 leading-relaxed drop-shadow-lg max-w-3xl mx-auto">
-          A small Palestinian village where olive trees aren't just a crop—they're a living record of family, season, and home.
+          A Palestinian food enterprise sharing premium harvests from generations-old family farms with tables across North America.
         </p>
       </div>
     </section>
