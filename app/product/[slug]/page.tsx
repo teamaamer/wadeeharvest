@@ -4,7 +4,8 @@ import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { getProductByHandle, getAllProducts, convertShopifyProduct, formatShopifyPrice, productMetaLabel } from "@/lib/shopify-helpers";
+import { getProductByHandle, getAllProducts, convertShopifyProduct, formatShopifyPrice, productMetaLabel, ProductOption } from "@/lib/shopify-helpers";
+import { SizeSelector } from "@/components/ui/SizeSelector";
 import { Button } from "@/components/ui/Button";
 import { QuantitySelector } from "@/components/ui/QuantitySelector";
 import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
@@ -21,6 +22,7 @@ export default function ProductPage() {
   const [loading, setLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+  const [selectedOptionId, setSelectedOptionId] = useState<string>("");
   const { addItem } = useShopifyCart();
   const { showToast } = useToast();
 
@@ -31,6 +33,7 @@ export default function ProductPage() {
       if (shopifyProduct) {
         const converted = convertShopifyProduct(shopifyProduct);
         setProduct(converted);
+        setSelectedOptionId(converted.variantId ?? "");
         
         // Fetch related products (same category)
         const allProducts = await getAllProducts();
@@ -45,10 +48,18 @@ export default function ProductPage() {
     fetchProduct();
   }, [slug]);
 
+  const options: ProductOption[] = product?.options ?? [];
+  const hasSizes = options.length > 1;
+  const selectedOption = options.find((o) => o.id === selectedOptionId);
+  const displayPrice = selectedOption?.price ?? product?.priceCAD ?? 0;
+  const soldOut = selectedOption ? !selectedOption.available : product?.availableForSale === false;
+
   const handleAddToCart = async () => {
-    if (product?.variantId) {
-      await addItem(product.variantId, quantity);
-      showToast(`${quantity} × ${product.name} added to cart`);
+    const variantId = selectedOption?.id ?? product?.variantId;
+    if (variantId && !soldOut) {
+      await addItem(variantId, quantity);
+      const sizeLabel = hasSizes && selectedOption ? ` (${selectedOption.size})` : "";
+      showToast(`${quantity} × ${product.name}${sizeLabel} added to cart`);
     }
   };
 
@@ -158,11 +169,24 @@ export default function ProductPage() {
             </div>
             <h1 className="text-4xl font-bold mb-4">{product.name}</h1>
             <p className="text-3xl font-semibold text-primary mb-6">
-              {formatShopifyPrice(product.priceCAD.toString())}
+              {formatShopifyPrice(displayPrice.toString())}
             </p>
             <p className="text-muted mb-6 leading-relaxed">
               {product.descriptionShort}
             </p>
+
+            {hasSizes && (
+              <div className="mb-6">
+                <span className="block text-sm font-medium mb-2">Size</span>
+                <SizeSelector
+                  options={options}
+                  selectedId={selectedOptionId}
+                  onSelect={setSelectedOptionId}
+                  size="lg"
+                  showPrices
+                />
+              </div>
+            )}
 
             <div className="mb-6">
               <label className="block text-sm font-medium mb-2">Quantity</label>
@@ -179,8 +203,9 @@ export default function ProductPage() {
                 size="lg"
                 onClick={handleAddToCart}
                 className="flex-1"
+                disabled={soldOut}
               >
-                Add to Cart
+                {soldOut ? "Sold Out" : "Add to Cart"}
               </Button>
               <Button variant="outline" size="lg" onClick={handleShare}>
                 Share

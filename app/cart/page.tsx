@@ -80,9 +80,11 @@ export default function CartPage() {
                       >
                         {product.title}
                       </Link>
-                      <p className="text-sm text-muted mb-2">
-                        {line.merchandise.title}
-                      </p>
+                      {line.merchandise.title !== "Default Title" && (
+                        <p className="text-sm text-muted mb-2">
+                          {line.merchandise.title}
+                        </p>
+                      )}
                       <p className="font-semibold">
                         {formatShopifyPrice(line.merchandise.priceV2.amount)}
                       </p>

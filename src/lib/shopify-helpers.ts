@@ -259,9 +259,29 @@ function getProductSizes(shopifyProduct: ShopifyProduct): string[] {
   return fromTitle ? [normalizeSize(fromTitle[0])] : [];
 }
 
+export interface ProductOption {
+  id: string;
+  size: string;
+  price: number;
+  available: boolean;
+}
+
+// One entry per size the customer can buy, each with its own price.
+function getProductOptions(shopifyProduct: ShopifyProduct): ProductOption[] {
+  return shopifyProduct.variants.edges.map(({ node }) => ({
+    id: node.id,
+    size: node.title && node.title !== 'Default Title' ? normalizeSize(node.title) : '',
+    price: parseFloat(node.priceV2.amount),
+    available: node.availableForSale,
+  }));
+}
+
 // Helper to convert Shopify product to our Product type
 export function convertShopifyProduct(shopifyProduct: ShopifyProduct): any {
-  const variant = shopifyProduct.variants.edges[0]?.node;
+  const options = getProductOptions(shopifyProduct);
+  const variant =
+    shopifyProduct.variants.edges.find((e) => e.node.availableForSale)?.node ??
+    shopifyProduct.variants.edges[0]?.node;
   const categoryLabel = shopifyProduct.productType?.trim() || 'Other';
   const sizes = getProductSizes(shopifyProduct);
 
@@ -282,6 +302,8 @@ export function convertShopifyProduct(shopifyProduct: ShopifyProduct): any {
     })),
     variantId: variant?.id,
     availableForSale: variant?.availableForSale,
+    // More than one entry means the customer must choose a size.
+    options,
   };
 }
 
